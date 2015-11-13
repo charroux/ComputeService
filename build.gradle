@@ -1,0 +1,33 @@
+apply plugin: 'java' 
+apply plugin: 'eclipse' 
+apply plugin: 'eclipse-wtp'
+
+version = '1.0'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	
+	compile 'org.apache.activemq:activemq-all:5.12.0'
+	
+	compile 'org.springframework.data:spring-data-mongodb:1.8.0.RELEASE'
+	  
+	compile group: 'log4j', name: 'log4j', version: '1.2.17'
+	
+	testCompile group: 'junit', name: 'junit', version: '4.5'
+}
+
+//create a single Jar with all dependencies, usage: gradle jarAll
+
+task jarAll(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Renting car message service with Active MQ',  
+        	'Implementation-Version': version,
+        	'Main-Class': 'messageBroker.MainAsynchronousTopicSubscriber'
+    }
+    baseName = project.name + '-withDependencies'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
